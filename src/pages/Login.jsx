@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser, resetAuthState } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
 
+import { Button } from "@/components/base/buttons/button";
+import { Input } from "@/components/base/input/input";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,24 +30,25 @@ export default function Login() {
 
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Email: </label>
-          <input
+          <Input
+            isRequired
+            label="Email"
             type="email"
             value={email}
-            onChange={(e) => {
+            onChange={(value) => {
               dispatch(resetAuthState());
-              setEmail(e.target.value);
+              setEmail(value);
             }}
           />
         </div>
         <div>
-          <label>Hasło: </label>
-          <input
+          <Input
+            isRequired
             type="password"
             value={password}
-            onChange={(e) => {
+            onChange={(value) => {
               dispatch(resetAuthState());
-              setPassword(e.target.value);
+              setPassword(value);
             }}
           />
         </div>

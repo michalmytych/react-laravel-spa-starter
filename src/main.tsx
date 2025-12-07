@@ -8,13 +8,12 @@ import { ThemeProvider } from '@/providers/theme-provider';
 import App from '@/App';
 import '@/styles/globals.css';
 
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
         <RouteProvider>
-          <ThemeProvider>
+          <ThemeProvider defaultTheme="dark">
             <App />
           </ThemeProvider>
         </RouteProvider>
