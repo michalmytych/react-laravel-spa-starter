@@ -1,75 +1,56 @@
-import { BookOpen01, Check, Copy01, Cube01, HelpCircle } from "@untitledui/icons";
-import { Button } from "@/components/base/buttons/button";
-import { ButtonUtility } from "@/components/base/buttons/button-utility";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { fetchUser, logoutUser } from "@/store/authSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { UntitledLogoMinimal } from "@/components/foundations/logo/untitledui-logo-minimal";
-import { useClipboard } from "@/hooks/use-clipboard";
+import { Button } from "@/components/base/buttons/button";
 
 export const HomeScreen = () => {
-    const clipboard = useClipboard();
+  const dispatch = useAppDispatch();
+  const { user, status } = useAppSelector((state) => state.auth);
 
-    return (
-        <div className="flex h-dvh flex-col">
-            <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-4">
-                <div className="relative flex size-28 items-center justify-center">
-                    <UntitledLogoMinimal className="size-10" />
-                </div>
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
 
-                <h1 className="max-w-3xl text-center text-display-sm font-semibold text-primary">Untitled UI Vite starter kit</h1>
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
+  };
 
-                <p className="mt-2 max-w-xl text-center text-lg text-tertiary">
-                    Get started by using existing components that came with this starter kit or add new ones:
-                </p>
+  if (status === "loading" && !user) {
+    return <p>Ładowanie...</p>;
+  }
 
-                <div className="relative mt-6 flex h-10 items-center rounded-lg border border-secondary bg-secondary">
-                    <code className="px-3 font-mono text-secondary">npx untitledui@latest add</code>
-
-                    <hr className="h-10 w-px bg-border-secondary" />
-
-                    <ButtonUtility
-                        color="tertiary"
-                        size="sm"
-                        tooltip="Copy"
-                        className="mx-1"
-                        icon={clipboard.copied ? Check : Copy01}
-                        onClick={() => clipboard.copy("npx untitledui@latest add")}
-                    />
-                </div>
-
-                <div className="mt-6 flex items-center gap-3">
-                    <Button
-                        href="https://www.untitledui.com/react/docs/introduction"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        color="link-color"
-                        size="lg"
-                        iconLeading={BookOpen01}
-                    >
-                        Docs
-                    </Button>
-                    <div className="h-px w-4 bg-brand-solid" />
-                    <Button
-                        href="https://www.untitledui.com/react/resources/icons"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        color="link-color"
-                        size="lg"
-                        iconLeading={Cube01}
-                    >
-                        Icons
-                    </Button>
-                    <div className="h-px w-4 bg-brand-solid" />
-                    <Button
-                        href="https://github.com/untitleduico/react/issues/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        color="link-color"
-                        size="lg"
-                        iconLeading={HelpCircle}
-                    >
-                        Help
-                    </Button>
-                </div>
-            </div>
+  return (
+    <div className="flex h-dvh flex-col">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-4">
+        <div className="relative flex size-28 items-center justify-center">
+          <UntitledLogoMinimal className="size-10" />
         </div>
-    );
+
+        <h1 className="max-w-3xl text-center text-display-sm font-semibold text-primary">
+          Untitled UI Vite starter kit
+        </h1>
+
+        <div className="mt-6 flex items-center gap-3 text-primary">
+          {user ? (
+            <div className="text-center">
+              <p>
+                Zalogowany jako: {user.name} ({user.email})
+              </p>
+              <Button color="primary-destructive" size="md" onClick={handleLogout}>Wyloguj</Button>
+            </div>
+          ) : (
+            <div className="text-center">
+              <p>Nie jesteś zalogowany.</p>
+              <p>
+                <Link to="/login">Przejdź do logowania</Link> {" | "}
+                <Link to="/register">Rejestracja</Link>
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
